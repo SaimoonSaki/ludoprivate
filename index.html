@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang=en>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name=theme-color content=#0b1120>
+<meta name=apple-mobile-web-app-capable content=yes>
+<title>Ludo</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+body{margin:0;min-height:100dvh;background:radial-gradient(120% 80% at 50% 0,#1e293b,#0b1120) fixed;color:#e2e8f0;font:16px/1.4 system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom);-webkit-user-select:none;user-select:none}
+main{max-width:520px;margin:0 auto;padding:12px 0}
+section{display:flex;flex-direction:column;gap:12px}
+[hidden]{display:none!important}
+h1{margin:8px 0 0;text-align:center;font-size:56px;line-height:1.1;letter-spacing:2px;background:linear-gradient(90deg,#f43f5e,#facc15,#22c55e,#3b82f6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mu{color:#94a3b8;font-size:14px;text-align:center;margin:0}
+.card{background:#1e293bd9;border:1px solid #ffffff1a;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}
+input{font:inherit;font-size:18px;padding:14px 16px;border-radius:14px;border:1px solid #334155;background:#0f172a;color:#fff;width:100%;outline:0;-webkit-user-select:text;user-select:text}
+input:focus{border-color:#60a5fa}
+#rc{text-transform:uppercase;letter-spacing:6px;text-align:center;font-weight:700}
+.row{display:flex;gap:10px;align-items:center}
+button{font:inherit;font-weight:700;border:0;border-radius:14px;padding:14px;color:#fff;background:linear-gradient(135deg,#6366f1,#3b82f6);cursor:pointer}
+.g{background:#334155;font-weight:600}
+#sw{display:flex;gap:14px;justify-content:center}
+#sw button{width:46px;height:46px;padding:0;border-radius:50%;border:3px solid transparent;opacity:.5}
+#sw .on{border-color:#fff;opacity:1;transform:scale(1.12)}
+.dot{width:14px;height:14px;border-radius:50%;flex:none;display:inline-block}
+#tb{display:flex;gap:10px;align-items:center;justify-content:center;font-weight:700;min-height:26px}
+#bd{display:block;aspect-ratio:1;width:min(100%,max(280px,calc(100dvh - 260px)));margin:0 auto;border-radius:18px;box-shadow:0 12px 40px #0009}
+.tk{transition:transform .15s ease-in-out}
+.ring{display:none}
+.can{cursor:pointer}.can .ring{display:block;animation:p .6s infinite alternate}
+@keyframes p{to{opacity:.2}}
+@keyframes q{to{box-shadow:0 0 0 9px #ffffff30}}
+#dice{display:grid;grid:repeat(3,1fr)/repeat(3,1fr);gap:4px;width:78px;height:78px;padding:12px;margin:0 auto;border:4px solid #334155;border-radius:22px;background:#fff}
+#dice i{border-radius:50%}#dice .on{background:#0f172a}
+#dice.me{animation:q .6s infinite alternate}
+#ps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chip{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;background:#1e293b;font-size:14px}
+#ov{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px}
+#ov .card{text-align:center;min-width:260px}
+#ts{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#ef4444;color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;white-space:nowrap}
+</style>
+<main>
+<section id=home>
+<h1>Ludo</h1>
+<p class=mu>No ads. No accounts. Just friends.</p>
+<form id=f class=card autocomplete=off>
+<input id=nm placeholder="Your nickname" maxlength=12 required>
+<div id=sw></div>
+<div class=row><input id=rc placeholder=CODE maxlength=6 required><button type=button id=rn class=g title="Random code">🎲</button></div>
+<button>Join / create room</button>
+<p class=mu>New code = new room. Roll a 6 to leave home · ★ squares are safe.</p>
+</form>
+</section>
+<section id=lobby hidden>
+<h1 style="font-size:40px">Room <span id=lc></span></h1>
+<div class=card id=pl></div>
+<p class=mu id=wt></p>
+<button id=go>Start game</button>
+<button id=cp class=g>Share invite link</button>
+<button id=lv class=g>Leave</button>
+</section>
+<section id=game hidden>
+<div id=tb></div>
+<svg id=bd viewBox="0 0 15 15"></svg>
+<button id=dice aria-label="Roll the dice"></button>
+<div id=ps></div>
+</section>
+</main>
+<div id=ov hidden><div class=card><div id=wn style="font-size:28px;font-weight:800"></div><button id=ag>Play again</button><p class=mu id=aw></p></div></div>
+<div id=ts hidden></div>
+<script>
+const COL=['#f43f5e','#22c55e','#facc15','#3b82f6'],NAME=['Red','Green','Yellow','Blue'],S0=[0,13,26,39],SAFE=new Set([0,8,13,21,26,34,39,47]),
+P=[[1,6],[2,6],[3,6],[4,6],[5,6],[6,5],[6,4],[6,3],[6,2],[6,1],[6,0],[7,0],[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[9,6],[10,6],[11,6],[12,6],[13,6],[14,6],[14,7],[14,8],[13,8],[12,8],[11,8],[10,8],[9,8],[8,9],[8,10],[8,11],[8,12],[8,13],[8,14],[7,14],[6,14],[6,13],[6,12],[6,11],[6,10],[6,9],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8],[0,7],[0,6]],
+H=[0,1,2,3].map(c=>[1,2,3,4,5].map(i=>[[i,7],[7,i],[14-i,7],[7,14-i]][c])),
+PIP=['','4','0 8','0 4 8','0 2 6 8','0 2 4 6 8','0 2 3 5 6 8'],
+$=i=>document.getElementById(i),
+esc=s=>s.replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';'),
+ld=k=>{try{return localStorage[k]||''}catch{return''}},
+sv=(k,v)=>{try{localStorage[k]=v}catch{}};
+let ws,me=-1,myName='',S=null,LB=null,joined=null,busy=0,gen=0,dt,tt,BD=0,pref=+ld('col')||0;
+const T=[],
+tx=m=>ws.readyState===1&&(ws.send(JSON.stringify(m)),1),
+toast=m=>{ts.textContent=m;ts.hidden=false;clearTimeout(tt);tt=setTimeout(()=>ts.hidden=true,3000)},
+view=()=>{const v=me<0?'home':S&&LB&&LB.started?'game':'lobby';['home','lobby','game'].forEach(x=>$(x).hidden=x!==v)},
+legal=(s,c,k,d)=>{const i=s.pos[c][k];return i<0?d===6:i+d<=56},
+nxt=s=>{let t=s.turn;do t=(t+1)%4;while(!s.on[t]);return t},
+pl_=c=>(LB&&LB.players.find(p=>p.c===c))||{},
+pn=c=>pl_(c).n||NAME[c],
+abs=(c,i)=>(S0[c]+i)%52,
+xy=(c,i,k)=>{
+ if(i<0){const o=[[0,0],[9,0],[9,9],[0,9]][c];return[o[0]+2+k%2*2,o[1]+2+(k>>1)*2]}
+ if(i<56){const p=i<51?P[(S0[c]+i)%52]:H[c][i-51];return[p[0]+.5,p[1]+.5]}
+ return[7.5+[-.7,0,.7,0][c]+(k%2-.5)*.3,7.5+[0,-.7,0,.7][c]+((k>>1)-.5)*.3]},
+setT=(c,k,x,y,s)=>T[c][k].style.transform=`translate(${x}px,${y}px) scale(${s})`,
+face=d=>dice.innerHTML=[...Array(9)].map((_,i)=>`<i${PIP[d].split(' ').includes(''+i)?' class=on':''}></i>`).join(''),
+shake=d=>{let n=0;dt=setInterval(()=>{face(1+Math.random()*6|0);if(++n>6){clearInterval(dt);face(d)}},70)};
+
+function layout(){const m={};
+ for(let c=0;c<4;c++)if(S.on[c])for(let k=0;k<4;k++){const i=S.pos[c][k],[x,y]=xy(c,i,k);(m[x+','+y]=m[x+','+y]||[]).push([c,k,x,y,i])}
+ for(const q of Object.values(m))q.forEach(([c,k,x,y,i],j)=>{const n=q.length,st=n>1&&i>=0&&i<56;setT(c,k,x+(st?(j-(n-1)/2)*.24:0),y,st?.8:i===56?.6:1)})}
+
+function build(){BD=1;let h='<rect width=15 height=15 rx=.7 fill=#f8fafc />';
+ [[0,0],[9,0],[9,9],[0,9]].forEach(([x,y],c)=>h+=`<g id=y${c}><rect x=${x} y=${y} width=6 height=6 fill=${COL[c]} /><rect x=${x+1} y=${y+1} width=4 height=4 rx=.5 fill=#fff />`+[[2,2],[4,2],[2,4],[4,4]].map(([a,b])=>`<circle cx=${x+a} cy=${y+b} r=.55 fill=${COL[c]} opacity=.3 />`).join('')+'</g>');
+ P.forEach(([x,y],i)=>{const s=S0.indexOf(i);h+=`<rect x=${x+.04} y=${y+.04} width=.92 height=.92 rx=.14 fill=${s<0?'#fff':COL[s]} stroke=#cbd5e1 stroke-width=.04 />`;if(s<0&&SAFE.has(i))h+=`<text x=${x+.5} y=${y+.55} font-size=.7 text-anchor=middle dominant-baseline=central fill=#94a3b8>★</text>`});
+ H.forEach((a,c)=>a.forEach(([x,y])=>h+=`<rect x=${x+.04} y=${y+.04} width=.92 height=.92 rx=.14 fill=${COL[c]} opacity=.8 />`));
+ [[1,'6,6 9,6 7.5,7.5'],[0,'6,6 6,9 7.5,7.5'],[2,'9,6 9,9 7.5,7.5'],[3,'6,9 9,9 7.5,7.5']].forEach(([c,p])=>h+=`<polygon points="${p}" fill=${COL[c]} />`);
+ for(let c=0;c<4;c++)for(let k=0;k<4;k++)h+=`<g class=tk id=t${c}${k} style="transform:translate(${xy(c,-1,k).join('px,')}px)"><circle cy=.08 r=.4 fill=#0003 /><circle r=.4 fill=${COL[c]} stroke=#fff stroke-width=.1 /><circle cx=-.13 cy=-.14 r=.12 fill=#fff7 /><circle class=ring r=.58 fill=none stroke=#0f172a stroke-width=.09 /></g>`;
+ bd.innerHTML=h;
+ for(let c=0;c<4;c++){T[c]=[];for(let k=0;k<4;k++){const e=T[c][k]=$('t'+c+k);e.onclick=()=>tap(c,k)}}}
+
+function send(s){if(tx({t:'state',s})){busy=1;setTimeout(()=>busy=0,2500)}}
+function pass(){send({...S,dice:0,turn:nxt(S),v:S.v+1})}
+function move(k){const s=JSON.parse(JSON.stringify(S)),c=s.turn,d=s.dice,i=s.pos[c][k],n=i<0?0:i+d;let bonus=d===6;
+ s.pos[c][k]=n;
+ if(n===56)bonus=true;
+ else if(n<51&&!SAFE.has(abs(c,n)))for(let o=0;o<4;o++)if(o!==c)s.pos[o].forEach((p,j)=>{if(p>=0&&p<51&&abs(o,p)===abs(c,n)){s.pos[o][j]=-1;bonus=true}});
+ s.dice=0;s.v++;
+ if(s.pos[c].every(p=>p===56))s.win=c;else if(!bonus)s.turn=nxt(s);
+ send(s)}
+const tap=(c,k)=>{if(S&&S.win<0&&c===me&&S.turn===me&&S.dice&&!busy&&legal(S,c,k,S.dice))move(k)};
+
+function render(){const my=S.turn===me,
+ t=S.win>=0?'Game over':my?(S.dice?'Pick a token':'Your turn — roll!'):esc(pn(S.turn))+(S.dice?' rolled '+S.dice:'’s turn');
+ tb.innerHTML=`<span class=dot style="background:${COL[S.turn]}"></span>${t}`;
+ ps.innerHTML=[0,1,2,3].filter(c=>S.on[c]).map(c=>`<div class=chip style="opacity:${pl_(c).on?1:.4}"><span class=dot style="background:${COL[c]}"></span>${esc(pn(c))}${c===me?' (you)':''} · ${S.pos[c].filter(p=>p===56).length}/4</div>`).join('');
+ for(let c=0;c<4;c++){$('y'+c).style.opacity=S.on[c]?1:.25;for(let k=0;k<4;k++){const e=T[c][k];e.style.display=S.on[c]?'':'none';e.classList.toggle('can',my&&c===me&&S.win<0&&S.dice>0&&legal(S,c,k,S.dice))}}
+ dice.style.borderColor=COL[S.turn];dice.classList.toggle('me',my&&!S.dice&&S.win<0);
+ ov.hidden=S.win<0;
+ if(S.win>=0){wn.textContent='🏆 '+pn(S.win)+' wins!';const h=LB&&LB.host===myName;ag.hidden=!h;aw.textContent=h?'':'Waiting for the host…'}}
+
+function onState(s){const o=S,g=++gen;busy=0;S=s;view();if(!BD)build();clearInterval(dt);
+ let w=0;
+ if(o&&o.v!==s.v)for(let c=0;c<4;c++)for(let k=0;k<4;k++){const a=o.pos[c][k],b=s.pos[c][k];
+  if(a>=0&&b>a&&b-a<=6){w=Math.max(w,b-a);for(let j=a+1;j<=b;j++)setTimeout(()=>{if(g===gen){const[x,y]=xy(c,j,k);setT(c,k,x,y,1)}},(j-a)*150)}}
+ if(w)setTimeout(()=>g===gen&&layout(),w*150+150);else layout();
+ if(o&&o.v!==s.v&&s.dice&&!o.dice)shake(s.dice);else face(s.dice);
+ render();
+ if(s.win<0&&s.turn===me&&s.dice){const v=s.v;setTimeout(()=>{if(S.v!==v||busy)return;
+  const L=[0,1,2,3].filter(k=>legal(S,me,k,S.dice));
+  if(!L.length)pass();else if(new Set(L.map(k=>S.pos[me][k])).size===1)move(L[0])},900)}}
+
+function drawLobby(){
+ pl.innerHTML=LB.players.map(p=>`<div class=row style="opacity:${p.on?1:.45}"><span class=dot style="background:${COL[p.c]}"></span><b>${esc(p.n)}</b><span class=mu>${p.n===LB.host?'host':''}${p.n===myName?' · you':''}</span></div>`).join('');
+ const h=LB.host===myName;go.hidden=!(h&&LB.players.length>1);
+ wt.textContent=h?(LB.players.length>1?'':'Waiting for friends to join…'):'Waiting for the host to start…'}
+
+function conn(){ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host);
+ ws.onopen=()=>joined&&tx({t:'join',...joined});
+ ws.onclose=()=>setTimeout(conn,800);
+ ws.onmessage=e=>{const m=JSON.parse(e.data);
+  if(m.t==='hi'){me=m.c;myName=m.n;lc.textContent=m.room;history.replaceState(0,'','?r='+m.room);view()}
+  else if(m.t==='lobby'){LB=m;drawLobby();view();if(S&&BD)render()}
+  else if(m.t==='state')onState(m.s);
+  else if(m.t==='err'){toast(m.m);joined=null;me=-1;view()}}}
+
+nm.value=ld('nm');
+rc.value=((new URLSearchParams(location.search).get('r')||ld('rc'))+'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
+rc.oninput=()=>rc.value=rc.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+rn.onclick=()=>rc.value=[...Array(4)].map(()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.random()*32|0]).join('');
+sw.innerHTML=COL.map((x,i)=>`<button type=button style="background:${x}" aria-label="${NAME[i]}"></button>`).join('');
+const pick=i=>{pref=i;[...sw.children].forEach((b,j)=>b.classList.toggle('on',i===j))};
+[...sw.children].forEach((b,i)=>b.onclick=()=>pick(i));pick(pref);
+f.onsubmit=e=>{e.preventDefault();const name=nm.value.trim(),room=rc.value.trim();if(!name||!room)return;
+ sv('nm',name);sv('col',pref);sv('rc',room);joined={name,room,color:pref};
+ if(!tx({t:'join',...joined}))toast('Connecting… the server may be waking up')};
+go.onclick=ag.onclick=()=>tx({t:'start'});
+cp.onclick=()=>navigator.share?navigator.share({title:'Ludo',text:'Join my Ludo room '+lc.textContent,url:location.href}).catch(()=>{}):navigator.clipboard.writeText(location.href).then(()=>toast('Link copied'));
+lv.onclick=()=>location.href=location.pathname;
+dice.onclick=()=>{if(S&&S.win<0&&S.turn===me&&!S.dice&&!busy)send({...S,dice:1+Math.random()*6|0,v:S.v+1})};
+document.onvisibilitychange=()=>{if(!document.hidden)try{ws.close()}catch{}};
+setInterval(()=>tx({t:'p'}),25000);
+conn();
+</script>
