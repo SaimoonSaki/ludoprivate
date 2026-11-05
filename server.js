@@ -33,6 +33,9 @@ wss.on('connection',w=>{
       all(R,lobby(R));all(R,{t:'state',s:R.s})}
     else if(m.t==='state'&&R.s&&R.s.win<0&&me.c===R.s.turn&&m.s&&m.s.v===R.s.v+1&&Array.isArray(m.s.pos)){
       R.s=m.s;all(R,{t:'state',s:R.s})}
+    else if(m.t==='sound'&&R){
+      all(R,{t:'sound',snd:m.snd,c:me.c});
+    }
   });
   w.on('close',()=>{if(!R||me.w!==w)return;me.w=null;all(R,lobby(R));
     if(!R.p.some(p=>p.w))R.k=setTimeout(()=>delete rooms[R.id],6e5)});
