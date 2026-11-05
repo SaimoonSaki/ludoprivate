@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0e14">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Ludo Royale</title>
+<title>Ludo Only Friends</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -156,7 +156,7 @@ button.g:hover{
 #bd{
   display:block;
   aspect-ratio:1;
-  width:min(100%, max(280px, calc(100dvh - 270px)));
+  width:min(100%, max(280px, calc(100dvh - 320px)));
   margin:0 auto;
   border-radius:20px;
   border:1px solid rgba(224, 160, 63, 0.3);
@@ -199,6 +199,114 @@ button.g:hover{
   font-size:13px;
   font-weight:600;
 }
+
+/* Soundboard Bar */
+#sb{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  background:rgba(19, 26, 38, 0.6);
+  backdrop-filter:blur(10px);
+  padding:8px 14px;
+  border-radius:99px;
+  border:1px solid rgba(224, 160, 63, 0.2);
+  margin:0 auto;
+}
+.sb-btn{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  padding:6px 12px;
+  border-radius:20px;
+  color:#fff;
+  font-size:13px;
+  box-shadow:none;
+}
+.sb-btn:hover{background:rgba(224, 160, 63, 0.2)}
+
+/* Minimal Elite "6" Overlay */
+#six-ov{
+  position:fixed;
+  top:30%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  pointer-events:none;
+  z-index:9000;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  animation:sixPop 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.six-card{
+  background:rgba(14, 19, 31, 0.92);
+  border:2px solid #E0A03F;
+  border-radius:28px;
+  padding:16px 36px;
+  text-align:center;
+  box-shadow:0 0 50px rgba(224, 160, 63, 0.5);
+}
+.six-num{
+  font-family:'Cinzel', serif;
+  font-size:64px;
+  font-weight:900;
+  color:#FEF3B1;
+  line-height:1;
+  text-shadow:0 0 20px rgba(224, 160, 63, 0.8);
+}
+.six-sub{
+  font-family:'Cinzel', serif;
+  font-size:12px;
+  letter-spacing:4px;
+  color:#E0A03F;
+  margin-top:4px;
+}
+@keyframes sixPop{
+  0%{opacity:0;transform:translate(-50%, -40%) scale(0.6)}
+  20%{opacity:1;transform:translate(-50%, -50%) scale(1.1)}
+  30%{transform:translate(-50%, -50%) scale(1)}
+  80%{opacity:1;transform:translate(-50%, -50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%, -60%) scale(0.9)}
+}
+
+/* Among Us Capture Overlay */
+#au-ov{
+  position:fixed;
+  inset:0;
+  background:rgba(5, 5, 8, 0.92);
+  backdrop-filter:blur(16px);
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:auFlash .3s ease-out;
+}
+.au-box{
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
+}
+.au-svg{
+  width:140px;
+  height:140px;
+  filter:drop-shadow(0 0 25px rgba(239, 68, 68, 0.6));
+  animation:auShake 0.4s ease-in-out;
+}
+.au-title{
+  font-family:'Cinzel', serif;
+  font-size:24px;
+  font-weight:900;
+  color:#ef4444;
+  letter-spacing:3px;
+  text-shadow:0 0 15px rgba(239, 68, 68, 0.6);
+}
+.au-sub{
+  font-size:16px;
+  font-weight:700;
+  color:#f8fafc;
+}
+@keyframes auFlash{0%{background:rgba(159, 43, 44, 0.6)}100%{background:rgba(5, 5, 8, 0.92)}}
+@keyframes auShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg) scale(1.1)}75%{transform:rotate(12deg) scale(1.1)}}
 
 #ov{
   position:fixed;
@@ -258,9 +366,34 @@ button.g:hover{
 <div id="tb"></div>
 <svg id="bd" viewBox="0 0 15 15"></svg>
 <button id="dice" aria-label="Roll the dice"></button>
+<div id="sb">
+  <button type="button" class="sb-btn" onclick="triggerSound('honk')">📢 Honk</button>
+  <button type="button" class="sb-btn" onclick="triggerSound('brass')">🎺 Brass</button>
+  <button type="button" class="sb-btn" onclick="triggerSound('bonk')">💥 Bonk</button>
+  <button type="button" class="sb-btn" onclick="triggerSound('party')">🎉 Party</button>
+</div>
 <div id="ps"></div>
 </section>
 </main>
+
+<div id="six-ov" hidden>
+  <div class="six-card">
+    <div class="six-num">6</div>
+    <div class="six-sub">ROYAL ROLL</div>
+  </div>
+</div>
+
+<div id="au-ov" hidden>
+  <div class="au-box">
+    <svg viewBox="0 0 100 100" class="au-svg">
+      <path d="M30,25 C30,12 70,12 70,25 L70,75 C70,88 60,92 50,92 C40,92 30,88 30,75 Z" fill="#9F2B2C"/>
+      <ellipse cx="65" cy="38" rx="18" ry="11" fill="#38bdf8" stroke="#0e131f" stroke-width="3"/>
+      <line x1="15" y1="52" x2="85" y2="52" stroke="#ef4444" stroke-width="5"/>
+    </svg>
+    <div class="au-title">EJECTED</div>
+    <div class="au-sub" id="au-txt">PLAYER WAS ELIMINATED</div>
+  </div>
+</div>
 
 <div id="ov" hidden>
   <div class="card">
@@ -273,7 +406,6 @@ button.g:hover{
 <div id="ts" hidden></div>
 
 <script>
-// Palette mappings: Auburn (#9F2B2C), Slate Gray (#355D67), Hunyadi Yellow (#E0A03F), Vanilla (#FEF3B1)
 const COL=['#9F2B2C','#355D67','#E0A03F','#FEF3B1'],
       NAME=['Auburn','Slate','Amber','Vanilla'],
       S0=[0,13,26,39],
@@ -287,6 +419,7 @@ const COL=['#9F2B2C','#355D67','#E0A03F','#FEF3B1'],
       sv=(k,v)=>{try{localStorage[k]=v}catch{}};
 
 let ws,me=-1,myName='',S=null,LB=null,joined=null,busy=0,gen=0,dt,tt,BD=0,pref=+ld('col')||0;
+let lastDiceVal = 1; // Persistent dice value fix
 const T=[],
 tx=m=>ws.readyState===1&&(ws.send(JSON.stringify(m)),1),
 toast=m=>{ts.textContent=m;ts.hidden=false;clearTimeout(tt);tt=setTimeout(()=>ts.hidden=true,3000)},
@@ -301,12 +434,12 @@ xy=(c,i,k)=>{
  if(i<56){const p=i<51?P[(S0[c]+i)%52]:H[c][i-51];return[p[0]+.5,p[1]+.5]}
  return[7.5+[-.7,0,.7,0][c]+(k%2-.5)*.3,7.5+[0,-.7,0,.7][c]+((k>>1)-.5)*.3]},
 setT=(c,k,x,y,s)=>T[c][k].style.transform=`translate(${x}px,${y}px) scale(${s})`,
-face=d=>dice.innerHTML=[...Array(9)].map((_,i)=>`<i${PIP[d].split(' ').includes(''+i)?' class=on':''}></i>`).join('');
+face=d=>{
+  const val = d || lastDiceVal || 1;
+  dice.innerHTML=[...Array(9)].map((_,i)=>`<i${PIP[val].split(' ').includes(''+i)?' class=on':''}></i>`).join('');
+};
 
-/**
- * Fast Loaded Dice Roller (FLDR) Algorithm implementation.
- * Samples exact discrete outcomes using minimum random bit entropy consumption.
- */
+/* Fast Loaded Dice Roller (FLDR) Algorithm */
 function fldrRoll(w = [1, 1, 1, 1, 1, 1]) {
   const m = w.reduce((a, b) => a + b, 0);
   const c = [];
@@ -333,26 +466,106 @@ function fldrRoll(w = [1, 1, 1, 1, 1, 1]) {
   }
 }
 
-/**
- * Decelerating dice shake animation (~1.4 seconds total duration).
- */
+/* Decelerating dice roll animation */
 function shake(finalValue) {
   clearTimeout(dt);
   let step = 0;
-  const maxSteps = 15;
-  let delay = 50; // Starts fast (50ms) and decelerates naturally
+  const maxSteps = 14;
+  let delay = 50;
 
   function animate() {
     face(1 + Math.floor(Math.random() * 6));
     step++;
     if (step >= maxSteps) {
+      lastDiceVal = finalValue;
       face(finalValue);
+      if (finalValue === 6) showSixAnim();
     } else {
       delay += 10;
       dt = setTimeout(animate, delay);
     }
   }
   dt = setTimeout(animate, delay);
+}
+
+/* Minimal "6" Animation Trigger */
+function showSixAnim() {
+  const el = $('six-ov');
+  el.hidden = false;
+  playSound('party');
+  setTimeout(() => { el.hidden = true; }, 1200);
+}
+
+/* Among Us Capture Animation Trigger */
+function showAmongUsKill(eaterName, victimName) {
+  const el = $('au-ov');
+  $('au-txt').textContent = `${eaterName.toUpperCase()} ELIMINATED ${victimName.toUpperCase()}`;
+  el.hidden = false;
+  playSound('amongus');
+  setTimeout(() => { el.hidden = true; }, 1800);
+}
+
+/* Audio Synthesizer & Assets Manager */
+const CUSTOM_SOUNDS = {
+  // Option: specify sound paths e.g. honk: 'assets/honk.mp3'
+};
+let actx = null;
+
+function playSound(type) {
+  if (CUSTOM_SOUNDS[type]) {
+    const a = new Audio(CUSTOM_SOUNDS[type]);
+    a.play().catch(() => {});
+    return;
+  }
+  try {
+    if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+    const t = actx.currentTime;
+    if (type === 'honk') {
+      [280, 370].forEach(f => {
+        const osc = actx.createOscillator(), gain = actx.createGain();
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(f, t);
+        gain.gain.setValueAtTime(0.3, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.35);
+        osc.connect(gain); gain.connect(actx.destination);
+        osc.start(t); osc.stop(t + 0.35);
+      });
+    } else if (type === 'brass') {
+      [349.23, 440, 523.25].forEach((f, i) => {
+        const osc = actx.createOscillator(), gain = actx.createGain();
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(f, t + i*0.05);
+        gain.gain.setValueAtTime(0.25, t + i*0.05); gain.gain.exponentialRampToValueAtTime(0.01, t + i*0.05 + 0.4);
+        osc.connect(gain); gain.connect(actx.destination);
+        osc.start(t + i*0.05); osc.stop(t + i*0.05 + 0.4);
+      });
+    } else if (type === 'bonk') {
+      const osc = actx.createOscillator(), gain = actx.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(450, t);
+      osc.frequency.exponentialRampToValueAtTime(60, t + 0.25);
+      gain.gain.setValueAtTime(0.4, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
+      osc.connect(gain); gain.connect(actx.destination);
+      osc.start(t); osc.stop(t + 0.25);
+    } else if (type === 'party') {
+      [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+        const osc = actx.createOscillator(), gain = actx.createGain();
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(f, t + i * 0.07);
+        gain.gain.setValueAtTime(0.2, t + i * 0.07); gain.gain.exponentialRampToValueAtTime(0.01, t + i * 0.07 + 0.2);
+        osc.connect(gain); gain.connect(actx.destination);
+        osc.start(t + i * 0.07); osc.stop(t + i * 0.07 + 0.2);
+      });
+    } else if (type === 'amongus') {
+      const osc = actx.createOscillator(), gain = actx.createGain();
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(160, t);
+      osc.frequency.exponentialRampToValueAtTime(30, t + 0.5);
+      gain.gain.setValueAtTime(0.4, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+      osc.connect(gain); gain.connect(actx.destination);
+      osc.start(t); osc.stop(t + 0.5);
+    }
+  } catch(e) {}
+}
+
+function triggerSound(snd) {
+  playSound(snd);
+  tx({t:'sound', snd});
 }
 
 function layout(){
@@ -431,10 +644,28 @@ function render(){
 function onState(s){
  const o=S,g=++gen;busy=0;S=s;view();if(!BD)build();clearTimeout(dt);
  let w=0;
+
+ /* Detect Among Us capture when a token is sent back home */
+ if (o && o.v !== s.v) {
+   for (let c = 0; c < 4; c++) {
+     for (let k = 0; k < 4; k++) {
+       if (o.pos[c][k] >= 0 && s.pos[c][k] === -1 && o.turn !== c) {
+         showAmongUsKill(pn(o.turn), pn(c));
+       }
+     }
+   }
+ }
+
  if(o&&o.v!==s.v)for(let c=0;c<4;c++)for(let k=0;k<4;k++){const a=o.pos[c][k],b=s.pos[c][k];
   if(a>=0&&b>a&&b-a<=6){w=Math.max(w,b-a);for(let j=a+1;j<=b;j++)setTimeout(()=>{if(g===gen){const[x,y]=xy(c,j,k);setT(c,k,x,y,1)}},(j-a)*150)}}
  if(w)setTimeout(()=>g===gen&&layout(),w*150+150);else layout();
- if(o&&o.v!==s.v&&s.dice&&!o.dice)shake(s.dice);else face(s.dice);
+ 
+ if(o&&o.v!==s.v&&s.dice&&!o.dice) {
+   shake(s.dice);
+ } else {
+   if(s.dice > 0) lastDiceVal = s.dice;
+   face(lastDiceVal);
+ }
  render();
  if(s.win<0&&s.turn===me&&s.dice){const v=s.v;setTimeout(()=>{if(S.v!==v||busy)return;
   const L=[0,1,2,3].filter(k=>legal(S,me,k,S.dice));
@@ -455,6 +686,7 @@ function conn(){
   if(m.t==='hi'){me=m.c;myName=m.n;lc.textContent=m.room;history.replaceState(0,'','?r='+m.room);view()}
   else if(m.t==='lobby'){LB=m;drawLobby();view();if(S&&BD)render()}
   else if(m.t==='state')onState(m.s);
+  else if(m.t==='sound'){playSound(m.snd);toast(`${pn(m.c)} sent ${m.snd.toUpperCase()}`)}
   else if(m.t==='err'){toast(m.m);joined=null;me=-1;view()}}
 }
 
@@ -474,7 +706,6 @@ go.onclick=ag.onclick=()=>tx({t:'start'});
 cp.onclick=()=>navigator.share?navigator.share({title:'Ludo Royale',text:'Join my room '+lc.textContent,url:location.href}).catch(()=>{}):navigator.clipboard.writeText(location.href).then(()=>toast('Invite link copied'));
 lv.onclick=()=>location.href=location.pathname;
 
-// Rolls using FLDR algorithm
 dice.onclick=()=>{if(S&&S.win<0&&S.turn===me&&!S.dice&&!busy)send({...S,dice:fldrRoll([1,1,1,1,1,1]),v:S.v+1})};
 document.onvisibilitychange=()=>{if(!document.hidden)try{ws.close()}catch{}};
 setInterval(()=>tx({t:'p'}),25000);
