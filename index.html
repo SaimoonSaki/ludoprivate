@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0e14">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Ludo Only Friends</title>
+<title>Ludo Royale</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -21,15 +21,15 @@ body{
   -webkit-user-select:none;
   user-select:none;
 }
-main{max-width:480px;margin:0 auto;padding:20px 0}
-section{display:flex;flex-direction:column;gap:18px}
+main{max-width:480px;margin:0 auto;padding:16px 0}
+section{display:flex;flex-direction:column;gap:16px}
 [hidden]{display:none!important}
 
 h1{
   margin:4px 0 0;
   text-align:center;
   font-family:'Cinzel', serif;
-  font-size:46px;
+  font-size:44px;
   font-weight:900;
   line-height:1.1;
   letter-spacing:6px;
@@ -55,10 +55,10 @@ h1{
   -webkit-backdrop-filter:blur(20px);
   border:1px solid rgba(224, 160, 63, 0.22);
   border-radius:24px;
-  padding:22px;
+  padding:20px;
   display:flex;
   flex-direction:column;
-  gap:16px;
+  gap:14px;
   box-shadow:0 24px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
@@ -156,39 +156,56 @@ button.g:hover{
 #bd{
   display:block;
   aspect-ratio:1;
-  width:min(100%, max(280px, calc(100dvh - 320px)));
+  width:min(100%, max(280px, calc(100dvh - 360px)));
   margin:0 auto;
   border-radius:20px;
   border:1px solid rgba(224, 160, 63, 0.3);
   box-shadow:0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(224, 160, 63, 0.1);
 }
 
-.tk{transition:transform .15s cubic-bezier(0.34, 1.56, 0.64, 1)}
+/* Tokens move at 300ms per tile for deliberate pacing */
+.tk{transition:transform .3s cubic-bezier(0.25, 1, 0.5, 1)}
 .ring{display:none}
 .can{cursor:pointer}
 .can .ring{display:block;animation:p .6s infinite alternate}
 @keyframes p{to{opacity:.15;transform:scale(1.2)}}
 @keyframes q{to{box-shadow:0 0 0 12px rgba(224, 160, 63, 0.25), 0 0 30px rgba(224, 160, 63, 0.4)}}
 
+#dice-wrapper {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+}
 #dice{
   display:grid;
   grid:repeat(3,1fr)/repeat(3,1fr);
   gap:4px;
-  width:74px;
-  height:74px;
+  width:78px;
+  height:78px;
   padding:11px;
   margin:0 auto;
-  border:2px solid #E0A03F;
+  border:3px solid #E0A03F;
   border-radius:20px;
   background:linear-gradient(145deg, #ffffff, #e6ded0);
   box-shadow:0 10px 25px rgba(0,0,0,0.5), inset 0 2px 4px #ffffff;
+  transition:all .3s ease;
 }
 #dice i{border-radius:50%}
 #dice .on{background:#9F2B2C;box-shadow:inset 0 1px 2px rgba(0,0,0,0.6)}
 #dice.me{animation:q .8s infinite alternate}
+#dice-val-label {
+  font-family:'Cinzel', serif;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:2px;
+  color:#E0A03F;
+  min-height:18px;
+}
 
 #ps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .chip{
+  position:relative;
   display:flex;
   align-items:center;
   gap:8px;
@@ -200,28 +217,66 @@ button.g:hover{
   font-weight:600;
 }
 
-/* Soundboard Bar */
-#sb{
+/* Action Bars: Soundboard & Emotes */
+.deck-bar{
   display:flex;
-  gap:8px;
+  gap:6px;
   justify-content:center;
-  background:rgba(19, 26, 38, 0.6);
+  flex-wrap:wrap;
+  background:rgba(19, 26, 38, 0.65);
   backdrop-filter:blur(10px);
-  padding:8px 14px;
-  border-radius:99px;
+  padding:8px 12px;
+  border-radius:18px;
   border:1px solid rgba(224, 160, 63, 0.2);
   margin:0 auto;
+  width:100%;
 }
-.sb-btn{
+.deck-btn{
   background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.1);
-  padding:6px 12px;
-  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.12);
+  padding:6px 10px;
+  border-radius:12px;
   color:#fff;
-  font-size:13px;
+  font-size:12px;
+  font-weight:600;
   box-shadow:none;
 }
-.sb-btn:hover{background:rgba(224, 160, 63, 0.2)}
+.deck-btn:hover{
+  background:rgba(224, 160, 63, 0.25);
+  border-color:#E0A03F;
+}
+
+/* Floating Emote Bubble */
+.emo-bubble{
+  position:absolute;
+  top:-42px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(14, 19, 31, 0.95);
+  border:1px solid #E0A03F;
+  border-radius:14px;
+  padding:4px 10px;
+  font-size:22px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.6);
+  z-index:100;
+  animation:emoPop 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.emo-img{
+  width:28px;
+  height:28px;
+  object-fit:contain;
+}
+@keyframes emoPop{
+  0%{opacity:0;transform:translate(-50%, 10px) scale(0.5)}
+  15%{opacity:1;transform:translate(-50%, 0) scale(1.15)}
+  25%{transform:translate(-50%, 0) scale(1)}
+  80%{opacity:1;transform:translate(-50%, 0) scale(1)}
+  100%{opacity:0;transform:translate(-50%, -15px) scale(0.8)}
+}
 
 /* Minimal Elite "6" Overlay */
 #six-ov{
@@ -234,10 +289,10 @@ button.g:hover{
   display:flex;
   flex-direction:column;
   align-items:center;
-  animation:sixPop 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation:sixPop 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .six-card{
-  background:rgba(14, 19, 31, 0.92);
+  background:rgba(14, 19, 31, 0.94);
   border:2px solid #E0A03F;
   border-radius:28px;
   padding:16px 36px;
@@ -365,13 +420,30 @@ button.g:hover{
 <section id="game" hidden>
 <div id="tb"></div>
 <svg id="bd" viewBox="0 0 15 15"></svg>
-<button id="dice" aria-label="Roll the dice"></button>
-<div id="sb">
-  <button type="button" class="sb-btn" onclick="triggerSound('honk')">📢 Honk</button>
-  <button type="button" class="sb-btn" onclick="triggerSound('brass')">🎺 Brass</button>
-  <button type="button" class="sb-btn" onclick="triggerSound('bonk')">💥 Bonk</button>
-  <button type="button" class="sb-btn" onclick="triggerSound('party')">🎉 Party</button>
+
+<div id="dice-wrapper">
+  <button id="dice" aria-label="Roll the dice"></button>
+  <div id="dice-val-label">ROLLED: -</div>
 </div>
+
+<!-- Soundboard Options Bar -->
+<div class="deck-bar">
+  <button type="button" class="deck-btn" onclick="triggerSound('honk')">📢 Honk</button>
+  <button type="button" class="deck-btn" onclick="triggerSound('brass')">🎺 Brass</button>
+  <button type="button" class="deck-btn" onclick="triggerSound('bonk')">💥 Bonk</button>
+  <button type="button" class="deck-btn" onclick="triggerSound('party')">🎉 Party</button>
+</div>
+
+<!-- Emote Options Bar -->
+<div class="deck-bar">
+  <button type="button" class="deck-btn" onclick="triggerEmote('crown')">👑</button>
+  <button type="button" class="deck-btn" onclick="triggerEmote('target')">🎯</button>
+  <button type="button" class="deck-btn" onclick="triggerEmote('laugh')">😂</button>
+  <button type="button" class="deck-btn" onclick="triggerEmote('fire')">🔥</button>
+  <button type="button" class="deck-btn" onclick="triggerEmote('cry')">😭</button>
+  <button type="button" class="deck-btn" onclick="triggerEmote('glove')">🥊</button>
+</div>
+
 <div id="ps"></div>
 </section>
 </main>
@@ -418,8 +490,29 @@ const COL=['#9F2B2C','#355D67','#E0A03F','#FEF3B1'],
       ld=k=>{try{return localStorage[k]||''}catch{return''}},
       sv=(k,v)=>{try{localStorage[k]=v}catch{}};
 
+/* CONFIGURATION: CUSTOM SOUND FILES (.mp3 / .wav)
+   Add paths to your own sound assets here. */
+const CUSTOM_SOUNDS = {
+  // honk: 'assets/sounds/honk.mp3',
+  // brass: 'assets/sounds/brass.wav',
+  // bonk:  'assets/sounds/bonk.mp3',
+  // party: 'assets/sounds/party.mp3'
+};
+
+/* CONFIGURATION: CUSTOM EMOTE IMAGES (.png / .webp)
+   Recommended specs: 128x128px PNGs with transparent background. */
+const CUSTOM_EMOTES = {
+  crown: '👑', // Replace with 'assets/emotes/crown.png'
+  target: '🎯',
+  laugh: '😂',
+  fire:  '🔥',
+  cry:   '😭',
+  glove: '🥊'
+};
+
 let ws,me=-1,myName='',S=null,LB=null,joined=null,busy=0,gen=0,dt,tt,BD=0,pref=+ld('col')||0;
-let lastDiceVal = 1; // Persistent dice value fix
+let lastDiceVal = 1;
+
 const T=[],
 tx=m=>ws.readyState===1&&(ws.send(JSON.stringify(m)),1),
 toast=m=>{ts.textContent=m;ts.hidden=false;clearTimeout(tt);tt=setTimeout(()=>ts.hidden=true,3000)},
@@ -437,6 +530,7 @@ setT=(c,k,x,y,s)=>T[c][k].style.transform=`translate(${x}px,${y}px) scale(${s})`
 face=d=>{
   const val = d || lastDiceVal || 1;
   dice.innerHTML=[...Array(9)].map((_,i)=>`<i${PIP[val].split(' ').includes(''+i)?' class=on':''}></i>`).join('');
+  $('dice-val-label').textContent = d ? `ROLLED: ${d}` : `ROLLED: ${lastDiceVal}`;
 };
 
 /* Fast Loaded Dice Roller (FLDR) Algorithm */
@@ -466,12 +560,12 @@ function fldrRoll(w = [1, 1, 1, 1, 1, 1]) {
   }
 }
 
-/* Decelerating dice roll animation */
+/* Decelerating dice shake animation with full hold phase */
 function shake(finalValue) {
   clearTimeout(dt);
   let step = 0;
-  const maxSteps = 14;
-  let delay = 50;
+  const maxSteps = 16;
+  let delay = 60;
 
   function animate() {
     face(1 + Math.floor(Math.random() * 6));
@@ -481,36 +575,32 @@ function shake(finalValue) {
       face(finalValue);
       if (finalValue === 6) showSixAnim();
     } else {
-      delay += 10;
+      delay += 12;
       dt = setTimeout(animate, delay);
     }
   }
   dt = setTimeout(animate, delay);
 }
 
-/* Minimal "6" Animation Trigger */
+/* Minimal "6" Animation Overlay */
 function showSixAnim() {
   const el = $('six-ov');
   el.hidden = false;
   playSound('party');
-  setTimeout(() => { el.hidden = true; }, 1200);
+  setTimeout(() => { el.hidden = true; }, 1400);
 }
 
-/* Among Us Capture Animation Trigger */
+/* Among Us Capture Screen Overlay */
 function showAmongUsKill(eaterName, victimName) {
   const el = $('au-ov');
   $('au-txt').textContent = `${eaterName.toUpperCase()} ELIMINATED ${victimName.toUpperCase()}`;
   el.hidden = false;
   playSound('amongus');
-  setTimeout(() => { el.hidden = true; }, 1800);
+  setTimeout(() => { el.hidden = true; }, 2000);
 }
 
-/* Audio Synthesizer & Assets Manager */
-const CUSTOM_SOUNDS = {
-  // Option: specify sound paths e.g. honk: 'assets/honk.mp3'
-};
+/* Audio Player with Custom File Support & Web Audio Fallback */
 let actx = null;
-
 function playSound(type) {
   if (CUSTOM_SOUNDS[type]) {
     const a = new Audio(CUSTOM_SOUNDS[type]);
@@ -566,6 +656,30 @@ function playSound(type) {
 function triggerSound(snd) {
   playSound(snd);
   tx({t:'sound', snd});
+}
+
+function triggerEmote(emoKey) {
+  showEmoteBubble(me, emoKey);
+  tx({t:'emote', emo: emoKey});
+}
+
+function showEmoteBubble(colorIdx, emoKey) {
+  const chip = document.querySelector(`.chip[data-color="${colorIdx}"]`);
+  if (!chip) return;
+  const old = chip.querySelector('.emo-bubble');
+  if (old) old.remove();
+
+  const bubble = document.createElement('div');
+  bubble.className = 'emo-bubble';
+  
+  const val = CUSTOM_EMOTES[emoKey] || '💬';
+  if (val.startsWith('http') || val.startsWith('assets/')) {
+    bubble.innerHTML = `<img src="${val}" class="emo-img" alt="emote"/>`;
+  } else {
+    bubble.textContent = val;
+  }
+  chip.appendChild(bubble);
+  setTimeout(() => bubble.remove(), 2200);
 }
 
 function layout(){
@@ -634,11 +748,18 @@ function render(){
  const my=S.turn===me,
  t=S.win>=0?'Game over':my?(S.dice?'Pick a token':'Your turn — roll!'):esc(pn(S.turn))+(S.dice?' rolled '+S.dice:'’s turn');
  tb.innerHTML=`<span class=dot style="background:${COL[S.turn]}"></span>${t}`;
- ps.innerHTML=[0,1,2,3].filter(c=>S.on[c]).map(c=>`<div class=chip style="opacity:${pl_(c).on?1:.4}"><span class=dot style="background:${COL[c]}"></span>${esc(pn(c))}${c===me?' (you)':''} · ${S.pos[c].filter(p=>p===56).length}/4</div>`).join('');
+ 
+ ps.innerHTML=[0,1,2,3].filter(c=>S.on[c]).map(c=>`
+   <div class="chip" data-color="${c}" style="opacity:${pl_(c).on?1:.4}">
+     <span class="dot" style="background:${COL[c]}"></span>
+     ${esc(pn(c))}${c===me?' (you)':''} · ${S.pos[c].filter(p=>p===56).length}/4
+   </div>
+ `).join('');
+
  for(let c=0;c<4;c++){$('y'+c).style.opacity=S.on[c]?1:.25;for(let k=0;k<4;k++){const e=T[c][k];e.style.display=S.on[c]?'':'none';e.classList.toggle('can',my&&c===me&&S.win<0&&S.dice>0&&legal(S,c,k,S.dice))}}
  dice.style.borderColor=COL[S.turn];dice.classList.toggle('me',my&&!S.dice&&S.win<0);
  ov.hidden=S.win<0;
- if(S.win>=0){wn.textContent='🏆 '+pn(S.win)+' wins!';const h=LB&&LB.host===myName;ag.hidden=!h;aw.textContent=h?'':'Waiting for the host…'}
+ if(S.win>=0){wn.textContent='🏆 '+pn(S.win)+' wins!';const h=LB&&LB.host===myName;ag.hidden=!h;aw.textContent=h?'':'Waiting for host…'}
 }
 
 function onState(s){
@@ -656,9 +777,12 @@ function onState(s){
    }
  }
 
+ /* Token Movement Pacing: 300ms per tile step for clear visual feedback */
  if(o&&o.v!==s.v)for(let c=0;c<4;c++)for(let k=0;k<4;k++){const a=o.pos[c][k],b=s.pos[c][k];
-  if(a>=0&&b>a&&b-a<=6){w=Math.max(w,b-a);for(let j=a+1;j<=b;j++)setTimeout(()=>{if(g===gen){const[x,y]=xy(c,j,k);setT(c,k,x,y,1)}},(j-a)*150)}}
- if(w)setTimeout(()=>g===gen&&layout(),w*150+150);else layout();
+  if(a>=0&&b>a&&b-a<=6){w=Math.max(w,b-a);for(let j=a+1;j<=b;j++)setTimeout(()=>{if(g===gen){const[x,y]=xy(c,j,k);setT(c,k,x,y,1)}},(j-a)*300)}}
+ 
+ // Delay board layout update until token step animations complete
+ if(w)setTimeout(()=>g===gen&&layout(),w*300+250);else layout();
  
  if(o&&o.v!==s.v&&s.dice&&!o.dice) {
    shake(s.dice);
@@ -667,9 +791,11 @@ function onState(s){
    face(lastDiceVal);
  }
  render();
+
+ /* Pacing Buffer: Gives players 1.8s to process rolls before auto-passing */
  if(s.win<0&&s.turn===me&&s.dice){const v=s.v;setTimeout(()=>{if(S.v!==v||busy)return;
   const L=[0,1,2,3].filter(k=>legal(S,me,k,S.dice));
-  if(!L.length)pass();else if(new Set(L.map(k=>S.pos[me][k])).size===1)move(L[0])},900)}
+  if(!L.length)pass();else if(new Set(L.map(k=>S.pos[me][k])).size===1)move(L[0])},1800)}
 }
 
 function drawLobby(){
@@ -687,6 +813,7 @@ function conn(){
   else if(m.t==='lobby'){LB=m;drawLobby();view();if(S&&BD)render()}
   else if(m.t==='state')onState(m.s);
   else if(m.t==='sound'){playSound(m.snd);toast(`${pn(m.c)} sent ${m.snd.toUpperCase()}`)}
+  else if(m.t==='emote'){showEmoteBubble(m.c, m.emo)}
   else if(m.t==='err'){toast(m.m);joined=null;me=-1;view()}}
 }
 
