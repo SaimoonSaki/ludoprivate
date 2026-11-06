@@ -36,6 +36,9 @@ wss.on('connection',w=>{
     else if(m.t==='sound'&&R){
       all(R,{t:'sound',snd:m.snd,c:me.c});
     }
+    else if(m.t==='emote'&&R){
+      all(R,{t:'emote',emo:m.emo,c:me.c});
+    }
   });
   w.on('close',()=>{if(!R||me.w!==w)return;me.w=null;all(R,lobby(R));
     if(!R.p.some(p=>p.w))R.k=setTimeout(()=>delete rooms[R.id],6e5)});
